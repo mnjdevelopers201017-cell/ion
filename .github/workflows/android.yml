@@ -2,7 +2,7 @@ name: Build Ion APK
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   workflow_dispatch:
 
 jobs:
@@ -24,14 +24,14 @@ jobs:
       - name: Build Next.js
         run: npm run build
 
-      - name: Sync Capacitor
-        run: npx cap sync android
-
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 17
+
+      - name: Sync Capacitor
+        run: npx cap sync android
 
       - name: Grant Gradle Permission
         run: chmod +x android/gradlew
@@ -45,3 +45,4 @@ jobs:
         with:
           name: ion-debug-apk
           path: android/app/build/outputs/apk/debug/*.apk
+          
