@@ -2,7 +2,6 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
-import Particles from "react-tsparticles";
 
 export default function IonChat() {
 
@@ -118,43 +117,6 @@ export default function IonChat() {
 
     <main className="relative flex h-screen flex-col overflow-hidden bg-[#030712] text-white">
 
-      {/* PARTICLES */}
-
-      <Particles
-        className="absolute inset-0"
-        options={{
-          fpsLimit: 60,
-
-          particles: {
-            number: {
-              value: 45,
-            },
-
-            color: {
-              value: auraColor,
-            },
-
-            links: {
-              enable: true,
-              color: auraColor,
-              opacity: 0.2,
-            },
-
-            move: {
-              enable: true,
-              speed: 1,
-            },
-
-            opacity: {
-              value: 0.5,
-            },
-
-            size: {
-              value: 2,
-            },
-          },
-        }}
-      />
 
       {/* BACKGROUND GLOW */}
 
