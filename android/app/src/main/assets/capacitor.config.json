@@ -1,8 +1,5 @@
 {
 	"appId": "com.mnj.ion",
 	"appName": "Ion",
-	"webDir": "dist",
-	"server": {
-		"cleartext": true
-	}
+	"webDir": "dist"
 }
