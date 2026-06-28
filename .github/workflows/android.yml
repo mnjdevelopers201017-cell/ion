@@ -22,6 +22,9 @@ jobs:
 
       - name: Build Vite Project
         run: npm run build
+        env:
+          VITE_CLERK_PUBLISHABLE_KEY: ${{ secrets.VITE_CLERK_PUBLISHABLE_KEY }}
+          VITE_GROQ_KEY: ${{ secrets.VITE_GROQ_KEY }}
 
       - name: Setup Java
         uses: actions/setup-java@v4
