@@ -19,10 +19,31 @@
 
 # production
 /build
+/dist
+*.zip
+
+# local dumps and backups
+/backup/
+LATEST_BUILD
+project_dump.txt
+repomix-output.xml
+
+# Android/Gradle
+.gradle/
+build/
+**/build/
+**/intermediates/
+**/outputs/
+*.apk
+*.aab
+local.properties
+gradle-wrapper.jar
 
 # misc
 .DS_Store
 *.pem
+.idea/
+.vscode/
 
 # debug
 npm-debug.log*

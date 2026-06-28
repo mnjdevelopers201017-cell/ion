@@ -21,7 +21,7 @@ steps:
   - name: Install dependencies
     run: npm install --legacy-peer-deps
 
-  - name: Build Next.js
+  - name: Build Vite Project
     run: npm run build
 
   - name: Setup Java
