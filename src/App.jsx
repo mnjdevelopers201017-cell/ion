@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
-import { useUser } from "@clerk/clerk-react";
+import { useUser, useClerk } from "@clerk/clerk-react";
+import { App as CapacitorApp } from "@capacitor/app";
+import { Browser } from "@capacitor/browser";
 
 import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
@@ -10,6 +12,7 @@ import SignUp from "./pages/SignUp";
 export default function App() {
   console.log("[Ion Debug] App: Component executing");
   const { isLoaded, isSignedIn } = useUser();
+  const { setActive } = useClerk();
   const [page, setPage] = useState("home");
 
   console.log("[Ion Debug] App: isLoaded =", isLoaded, "| isSignedIn =", isSignedIn);
@@ -27,15 +30,48 @@ export default function App() {
     }
   }, [isLoaded, isSignedIn]);
 
+  useEffect(() => {
+    // Listen for deep links
+    CapacitorApp.addListener('appUrlOpen', async (event) => {
+      console.log("[Ion Debug] Deep Link received:", event.url);
+
+      if (event.url.includes('com.mnj.ion://oauth')) {
+        try {
+          // Extract the token/session from the URL if provided by Clerk
+          // Clerk typically sends the token in a query parameter or fragment
+          const url = new URL(event.url);
+          const params = new URLSearchParams(url.search);
+          const token = params.get('token') || params.get('ticket');
+
+          if (token) {
+            // For headless OAuth, we typically use a ticket or session ID
+            // This part assumes the Clerk configuration redirects back with a session identifier
+            await setActive({ session: token });
+            console.log("[Ion Debug] Session activated via deep link");
+            setPage("dashboard");
+          } else {
+            console.warn("[Ion Debug] Deep link received but no token found in URL");
+          }
+
+          // Close the system browser if it was used for OAuth
+          await Browser.close();
+        } catch (err) {
+          console.error("[Ion Debug] Error handling OAuth deep link:", err);
+        }
+      }
+    });
+
+    return () => {
+      CapacitorApp.removeAllListeners();
+    };
+  }, [setActive]);
+
   if (!isLoaded) {
     console.log("[Ion Debug] App: Returning Loading state");
     return <div className="flex min-h-screen items-center justify-center bg-[#050816] text-white">Loading...</div>;
   }
 
   console.log("[Ion Debug] App: Rendering page:", page);
-
-  // If signed in, we might want to restrict some pages or handle routing differently.
-  // For now, we'll allow manual page switching if needed, but the default will be dashboard.
 
   switch (page) {
     case "signin":
@@ -51,9 +87,8 @@ export default function App() {
       return <IonChat setPage={setPage} />;
 
     default:
-      // If user is signed in and on home, maybe they should be on dashboard?
-      // The useEffect handles this.
       return <Home setPage={setPage} />;
   }
 }
+
 
