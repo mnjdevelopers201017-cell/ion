@@ -38,13 +38,17 @@ export default function SignIn({ setPage }) {
     setError("");
 
     try {
-      const { url } = await signIn.authenticateWithRedirect({
+      const result = await signIn.create({
         strategy: "oauth_google",
         redirectUrl: "com.mnj.ion://oauth",
         redirectCallbackUrl: "com.mnj.ion://oauth",
       });
       
-      await Browser.open({ url });
+      if (result.url) {
+        await Browser.open({ url: result.url });
+      } else {
+        throw new Error("OAuth URL not received from Clerk");
+      }
     } catch (err) {
       console.error("Google Sign In Error:", err);
       setError("Failed to initiate Google Sign In. Please try again.");
