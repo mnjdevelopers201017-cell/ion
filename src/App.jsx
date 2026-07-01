@@ -12,8 +12,7 @@ import SignUp from "./pages/SignUp";
 export default function App() {
   console.log("[Ion Debug] App: Component executing");
   const { isLoaded, isSignedIn } = useUser();
-  const { setActive } = useClerk();
-  const { signIn } = useSignIn();
+  const { setActive, signIn } = useClerk();
   const [page, setPage] = useState("home");
 
   console.log("[Ion Debug] App: isLoaded =", isLoaded, "| isSignedIn =", isSignedIn);
