@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useSignIn } from "@clerk/clerk-react";
+import { Browser } from "@capacitor/browser";
 
 export default function SignIn({ setPage }) {
   const { isLoaded, signIn, setActive } = useSignIn();
@@ -29,6 +30,24 @@ export default function SignIn({ setPage }) {
     } catch (err) {
       console.error("Sign In Error:", err);
       setError(err.errors?.[0]?.message || "An unexpected error occurred.");
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    if (!isLoaded) return;
+    setError("");
+
+    try {
+      const { url } = await signIn.authenticateWithRedirect({
+        strategy: "oauth_google",
+        redirectUrl: "com.mnj.ion://oauth",
+        redirectCallbackUrl: "com.mnj.ion://oauth",
+      });
+      
+      await Browser.open({ url });
+    } catch (err) {
+      console.error("Google Sign In Error:", err);
+      setError("Failed to initiate Google Sign In. Please try again.");
     }
   };
 
@@ -79,6 +98,24 @@ export default function SignIn({ setPage }) {
           className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-500 text-white font-semibold rounded-lg transition-all shadow-lg shadow-blue-600/20"
         >
           Sign In
+        </button>
+
+        <div className="relative my-6">
+          <div className="absolute inset-0 flex items-center">
+            <span className="w-full border-t border-slate-700"></span>
+          </div>
+          <div className="relative flex justify-center text-xs uppercase">
+            <span className="bg-[#0a0e25] px-2 text-slate-500">Or continue with</span>
+          </div>
+        </div>
+
+        <button
+          type="button"
+          onClick={handleGoogleSignIn}
+          className="w-full py-3 px-4 bg-white text-black font-semibold rounded-lg transition-all hover:bg-gray-200 flex items-center justify-center gap-2"
+        >
+          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" className="w-5 h-5" />
+          Continue with Google
         </button>
 
         <div className="text-center text-sm text-slate-400">
